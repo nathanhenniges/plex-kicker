@@ -6,7 +6,7 @@ const axios = require("axios");
 require("dotenv").config();
 
 async function getSessions() {
-  console.log("RUNNING");
+  console.log("CHECKING.....");
   const response = await axios.get(
     `http://${process.env.PLEX_IP}:${process.env.PLEX_PORT}/status/sessions?X-Plex-Token=${process.env.PLEX_TOKEN}`
   );
@@ -14,12 +14,12 @@ async function getSessions() {
     return false;
   }
   response.data.MediaContainer.Metadata.map(async (data) => {
-    if (data.Player.remotePublicAddres !== undefined) {
-      console.log("NOT REMOTE SKIPPING");
+    if (data.User.title === process.env.PLEX_OWNER) {
+      console.log("NOT SKIPPING IS OWNER");
       return false;
     }
-    if (data.User.title === process.env.PLEX_OWNER) {
-      console.log("IS POWNER SKIPPING");
+    if (data.Player.local === true) {
+      console.log("NOT SKIPPING IS HOME");
 
       return false;
     } else {
